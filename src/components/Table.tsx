@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Divider, Radio, Table } from 'antd';
+import { Divider, Radio, Table, Button } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { addSelected } from '../redux/selectSlice'; // путь к твоему slice
+import { addSelected, removeSelected } from '../redux/selectSlice';
 
 interface DataType {
   key: React.Key;
@@ -10,22 +10,6 @@ interface DataType {
   age: number;
   address: string;
 }
-
-const columns: TableColumnsType<DataType> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    render: (text: string) => <a>{text}</a>,
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-];
 
 const originalData: DataType[] = [
   {
@@ -70,6 +54,34 @@ const CustomTable: React.FC = () => {
       name: record.name,
     }),
   };
+
+  const columns: TableColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      render: (text: string) => <a>{text}</a>,
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+    },
+  ];
+
+  if (currentPage === 2) {
+    columns.push({
+      title: 'Action',
+      dataIndex: 'action',
+      render: (_, record: DataType) => (
+        <Button danger onClick={() => dispatch(removeSelected(String(record.key)))}>
+          Delete
+        </Button>
+      ),
+    });
+  }
 
   const displayedData = currentPage === 1 ? originalData : selecteds;
 
